@@ -39,8 +39,18 @@ function App() {
 
 	const removeTasks = () => {
 		setTasks([]);
-		localStorage.removeItem("task");
+		localStorage.clear("task");
 	};
+
+	const removeTodoFromStorage = (id) =>
+		localStorage.setItem(
+			"task",
+			JSON.stringify(
+				JSON.parse(localStorage.getItem("task") ?? "[]").filter(
+					(item) => item.id !== id
+				)
+			)
+		);
 
 	const checkedTask = (id) => {
 		setTimeout(() => {
@@ -51,6 +61,7 @@ function App() {
 				task.id === id ? { ...task, complete: !task.complete } : { ...task }
 			),
 		]);
+		removeTodoFromStorage(id);
 	};
 
 	return (
