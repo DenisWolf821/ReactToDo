@@ -1,11 +1,18 @@
 import "./App.scss";
 import arrow from "./img/arrow.svg";
 import { Item } from "./components/item";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
 	const [textInput, setTextInput] = useState("");
 	const [tasks, setTasks] = useState([]);
+
+	useEffect(() => {
+		if (localStorage.getItem("task")) {
+			const taskList = JSON.parse(localStorage.getItem("task"));
+			setTasks(taskList);
+		}
+	}, []);
 
 	const addTask = () => {
 		if (textInput) {
@@ -16,6 +23,7 @@ function App() {
 			};
 			setTasks([...tasks, newItem]);
 			setTextInput("");
+			localStorage.setItem("task", JSON.stringify([...tasks, newItem]));
 		}
 	};
 
@@ -30,15 +38,14 @@ function App() {
 	};
 
 	const removeTasks = () => {
-		setTasks(() => {
-			return [];
-		});
+		setTasks([]);
+		localStorage.removeItem("task");
 	};
 
 	const checkedTask = (id) => {
 		setTimeout(() => {
 			setTasks([...tasks.filter((count) => count.id !== id)]);
-		}, 700);
+		}, 300);
 		setTasks([
 			...tasks.map((task) =>
 				task.id === id ? { ...task, complete: !task.complete } : { ...task }
